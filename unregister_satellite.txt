@@ -1,0 +1,8 @@
+tasks:
+   - name: Get SystemID
+     shell: cat /etc/sysconfig/rhn/systemid | grep "<value><string>ID-" | awk -F"<" '{ print $3 }' | cut -d "-" -f 2
+     register: systemid
+
+   - name: Delete server from satellite
+     shell: spacewalk-api --server=localhost --user= --password=  system.deleteSystem %session%  "{{ systemid.stdout }}"
+     delegate_to: satellite_server_hostname
